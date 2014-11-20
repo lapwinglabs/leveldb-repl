@@ -1,11 +1,18 @@
 
 # level-repl
 
-  super simple repl for leveldb. supports up to node 0.11.14 using [level-11](npmjs.org/package/level-11).
+  Super simple REPL for leveldb. Supports get globs.
 
 ## Example
 
   ![view](https://cldup.com/ufKEFH-snQ.png)
+
+## Features
+
+- Glob keys when getting a value
+- Support up to Supports up to node 0.11.14 using [level-11](npmjs.org/package/level-11)
+- Supports JSON formatting and utf-8 encoding
+- Pretty colors
 
 ## Usage
 
@@ -34,10 +41,6 @@ $ level [dbpath]
 > del fruit
 # delete fruit key
 ```
-
-## TODO
-
-* [debug](http://github.com/tj/debug) style gets
 
 ## License
 
