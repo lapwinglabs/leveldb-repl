@@ -7,6 +7,8 @@
 var repl = require('repl');
 var level = require('level-11');
 var minimist = require('minimist');
+var chalk = require('chalk');
+var gtor = require('glob-to-regexp');
 var args = minimist(process.argv);
 var pj = require('prettyjson');
 var dbpath = args._[2];
@@ -78,15 +80,10 @@ function evaluate(cmd, ctx, filename, fn) {
 
   actions[cmd](args, function(err, val) {
     if (err) return fn(err);
-    if (val) console.log('\n  %s\n', val.replace('\n', '\n  '));
-    else console.log('  done');
+    else if (val) console.log(val);
     fn(null, undefined);
   });
 }
-
-/**
- * Actions
- */
 
 /**
  * Get
@@ -95,19 +92,24 @@ function evaluate(cmd, ctx, filename, fn) {
 actions.get = function(args, fn) {
   if (args.length < 1) return fn(null, help);
   var key = string(args.join(' '));
+  var rkey = gtor(key, { extended: true });
 
-  db.get(key, function(err, val) {
-    if (err) return err.notFound ? fn(null, 'null') : fn(err);
-    var val = unstring(val.trim());
+  db.createReadStream()
+    .on('error', fn)
+    .on('close', fn)
+    .on('end', fn)
+    .on('data', function(data) {
+      var val = data.value;
+      var key = data.key;
+      if (!rkey.test(string(key))) return;
+      val = rjson.test(val) ? pj.render(JSON.parse(val)) : val;
+      val = val.replace(/\n/g, '\n      ' + repeat(' ', key.length))
+      console.log('\n  %s => %s\n', chalk.red(unstring(key)), val);
+    });
+}
 
-    if (rjson.test(val)) {
-      val = pj.render(JSON.parse(val));
-    } else {
-      val = string(val);
-    }
-
-    return fn(null, val);
-  });
+function repeat(str, n) {
+  return new Array(+n + 1).join(str);
 }
 
 /**
@@ -124,7 +126,6 @@ actions.put = function(args, fn) {
     val = JSON.parse(val);
     opts.valueEncoding = 'json';
   } else {
-    val = string(val);
     opts.valueEncoding = 'utf8';
   }
 

@@ -9,6 +9,9 @@
     "url": "git://github.com/lapwinglabs/level-repl.git"
   },
   "dependencies": {
+    "chalk": "^0.5.1",
+    "glob-to-regexp": "0.0.1",
+    "level-11": "^0.18.0",
     "minimist": "^1.1.0",
     "prettyjson": "^1.0.0"
   },
@@ -16,7 +19,7 @@
     "mocha": "*",
     "should": "*"
   },
-  "scripts": {
+  "bin": {
     "level": "bin/level"
   }
 }

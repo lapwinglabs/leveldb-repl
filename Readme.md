@@ -1,11 +1,43 @@
 
 # level-repl
 
-  super simple repl for leveldb. supports node 0.11.x using [level-11](npmjs.org/package/level-11).
+  super simple repl for leveldb. supports up to node 0.11.14 using [level-11](npmjs.org/package/level-11).
 
 ## Example
 
+  ![view](https://cldup.com/ufKEFH-snQ.png)
 
+## Usage
+
+```bash
+$ level [dbpath]
+# example: level db/
+
+> level help
+
+  usage:
+
+      get <key>
+      put <key> <value>
+      del <key>
+
+> get *
+# get all
+
+> get user*
+# get all keys starting with "user"
+
+> put fruit apple
+> get fruit
+# "fruit => apple"
+
+> del fruit
+# delete fruit key
+```
+
+## TODO
+
+* [debug](http://github.com/tj/debug) style gets
 
 ## License
 
