@@ -1,7 +1,7 @@
 
 # level-repl
 
-  Super simple REPL for leveldb. Supports get globs.
+  Super simple REPL for leveldb.
 
 ## Example
 
@@ -9,10 +9,10 @@
 
 ## Features
 
-- Glob keys when getting a value
-- Support up to Supports up to node 0.11.14 using [level-11](npmjs.org/package/level-11)
-- Supports JSON formatting and utf-8 encoding
-- Pretty colors
+- Glob keys when getting a value.
+- Support up to Supports up to node 0.11.14 using [level-11](npmjs.org/package/level-11).
+- Supports JSON formatting and utf-8 encoding.
+- Pretty colors.
 
 ## Usage
 
