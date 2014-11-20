@@ -3,9 +3,11 @@
 
   Super simple REPL for leveldb.
 
-## Example
-
   ![view](https://cldup.com/ufKEFH-snQ.png)
+
+## Installation
+
+    npm install leveldb-repl
 
 ## Features
 
