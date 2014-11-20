@@ -1,0 +1,159 @@
+#!/usr/bin/env node
+
+/**
+ * Module Dependencies
+ */
+
+var repl = require('repl');
+var level = require('level-11');
+var minimist = require('minimist');
+var args = minimist(process.argv);
+var pj = require('prettyjson');
+var dbpath = args._[2];
+var actions = {};
+
+/**
+ * Help
+ */
+
+var help = [
+  '',
+  '  usage: ',
+  '',
+  '      get <key>',
+  '      put <key> <value>',
+  '      del <key>',
+  ''
+].join('\n');
+
+/**
+ * Regexps
+ */
+
+var rcmd = /^(help|get|put|del)/i;
+var rjson = /^\{|\}$/;
+
+/**
+ * Ensure we have a dbpath
+ */
+
+if (!dbpath) {
+  console.error('usage: level [dbpath] ');
+  process.exit(1);
+}
+
+/**
+ * Initialize level
+ */
+
+var db = level(dbpath);
+
+/**
+ * Start the repl
+ */
+
+repl.start({
+  prompt: 'level > ',
+  input: process.stdin,
+  output: process.stdout,
+  ignoreUndefined: true,
+  eval: evaluate
+});
+
+/**
+ * Evaluate the input
+ */
+
+function evaluate(cmd, ctx, filename, fn) {
+  cmd = cmd.replace('\n', '');
+  if (!cmd) return fn(null, undefined);
+
+  var args = cmd.split(' ');
+  cmd = args.shift().toLowerCase();
+
+  if ('help' == cmd || !rcmd.test(cmd)) {
+    console.log(help);
+    return fn(null, undefined);
+  }
+
+  actions[cmd](args, function(err, val) {
+    if (err) return fn(err);
+    if (val) console.log('\n  %s\n', val.replace('\n', '\n  '));
+    else console.log('  done');
+    fn(null, undefined);
+  });
+}
+
+/**
+ * Actions
+ */
+
+/**
+ * Get
+ */
+
+actions.get = function(args, fn) {
+  if (args.length < 1) return fn(null, help);
+  var key = string(args.join(' '));
+
+  db.get(key, function(err, val) {
+    if (err) return err.notFound ? fn(null, 'null') : fn(err);
+    var val = unstring(val.trim());
+
+    if (rjson.test(val)) {
+      val = pj.render(JSON.parse(val));
+    } else {
+      val = string(val);
+    }
+
+    return fn(null, val);
+  });
+}
+
+/**
+ * Put
+ */
+
+actions.put = function(args, fn) {
+  if (args.length < 2) return fn(null, help);
+  var key = string(args.shift());
+  var val = args.join(' ').trim();
+  var opts = {};
+
+  if (rjson.test(val)) {
+    val = JSON.parse(val);
+    opts.valueEncoding = 'json';
+  } else {
+    val = string(val);
+    opts.valueEncoding = 'utf8';
+  }
+
+  db.put(key, val, opts, fn);
+}
+
+/**
+ * del
+ */
+
+actions.del = function(args, fn) {
+  if (args.length < 1) return fn(null, help);
+  var key = string(args.join(' '));
+  db.del(key, fn);
+}
+
+/**
+ * string(...)
+ */
+
+function string(str) {
+  str = unstring(str);
+  return '"' + str + '"';
+}
+
+/**
+ * unstring(str)
+ */
+
+function unstring(str) {
+  return str.replace(/^['"]|['"]$/g, '');
+}

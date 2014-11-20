@@ -1,0 +1,22 @@
+{
+  "name": "level-repl",
+  "version": "0.0.1",
+  "description": "simple repl for leveldb. supports node 0.11.x.",
+  "keywords": [],
+  "author": "Matthew Mueller <matt@lapwinglabs.com>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/lapwinglabs/level-repl.git"
+  },
+  "dependencies": {
+    "minimist": "^1.1.0",
+    "prettyjson": "^1.0.0"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
+  },
+  "scripts": {
+    "level": "bin/level"
+  }
+}
