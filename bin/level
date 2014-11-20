@@ -67,12 +67,10 @@ repl.start({
  */
 
 function evaluate(cmd, ctx, filename, fn) {
-  cmd = cmd.replace('\n', '');
+  cmd = cmd.replace(/[\(\n\)]/g, '');
   if (!cmd) return fn(null, undefined);
-
   var args = cmd.split(' ');
   cmd = args.shift().toLowerCase();
-
   if ('help' == cmd || !rcmd.test(cmd)) {
     console.log(help);
     return fn(null, undefined);
