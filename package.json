@@ -1,5 +1,5 @@
 {
-  "name": "level-repl",
+  "name": "leveldb-repl",
   "version": "0.0.1",
   "description": "simple repl for leveldb. supports node 0.11.x.",
   "keywords": [],
