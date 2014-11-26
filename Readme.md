@@ -7,7 +7,7 @@
 
 ## Installation
 
-    npm install leveldb-repl
+    npm install -g leveldb-repl
 
 ## Features
 
