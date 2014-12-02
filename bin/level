@@ -137,7 +137,35 @@ actions.put = function(args, fn) {
 actions.del = function(args, fn) {
   if (args.length < 1) return fn(null, help);
   var key = string(args.join(' '));
-  db.del(key, fn);
+
+  if (args.length < 1) return fn(null, help);
+  var key = string(args.join(' '));
+  var rkey = gtor(key, { extended: true });
+  var keys = [];
+
+  db.createReadStream()
+    .on('error', fn)
+    .on('close', fn)
+    .on('end', next)
+    .on('data', function(data) {
+      var val = data.value;
+      var key = data.key;
+      if (!rkey.test(string(key))) return;
+      keys.push(key);
+    });
+
+  function next() {
+    var ws = db.createWriteStream({ type: 'del' })
+      .on('error', fn)
+      .on('close', fn)
+
+    for (var i = 0, key; key = keys[i++];) {
+      ws.write({ key: key });
+    }
+
+    ws.end();
+  }
+
 }
 
 /**
