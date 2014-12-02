@@ -143,6 +143,7 @@ actions.del = function(args, fn) {
   var rkey = gtor(key, { extended: true });
   var keys = [];
 
+  // This could probably be optimized
   db.createReadStream()
     .on('error', fn)
     .on('close', fn)
