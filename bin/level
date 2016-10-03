@@ -5,7 +5,7 @@
  */
 
 var repl = require('repl');
-var level = require('level-11');
+var level = require('level');
 var minimist = require('minimist');
 var chalk = require('chalk');
 var gtor = require('glob-to-regexp');
@@ -101,7 +101,12 @@ actions.get = function(args, fn) {
       var key = data.key;
       if (!rkey.test(string(key))) return;
       val = rjson.test(val) ? pj.render(JSON.parse(val)) : val;
-      val = val.replace(/\n/g, '\n      ' + repeat(' ', key.length))
+      if (key.length >= 80) {
+          var off = '\n      ';
+          val = off + val.replace(/\n/g, off);
+      } else {
+          val = val.replace(/\n/g, '\n      ' + repeat(' ', key.length));
+      }
       console.log('\n  %s => %s\n', chalk.red(unstring(key)), val);
     });
 }
